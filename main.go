@@ -16,13 +16,9 @@ func main() {
 
 	start := time.Now()
 
-	job.ParseBlocksAndTransactions([]uint64{9514747})
+	job.ExportAll("postgres://akkien:trungkien@127.0.0.1:5432/ropsten?sslmode=disable", 5)
 
 	elapsed := time.Since(start)
 	log.Printf("Parse block took %s", elapsed)
 
-	//fmt.Println(util.HexToDec("0x1a"))
-	//job.ExportAll()
-
-	//fmt.Println(db.Insert("blocks"))
 }

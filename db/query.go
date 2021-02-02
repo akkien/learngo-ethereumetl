@@ -151,31 +151,26 @@ func GetInsertParamsBlock(blocks []model.Block) (query string, values []interfac
 }
 
 // GetInsertParamsTransaction new record to database
-func GetInsertParamsTransaction(blocks []model.Block) (query string, values []interface{}) {
-	numFields := len(blockParams)
-	query = `INSERT INTO transactions (` + strings.Join(blockParams, ",") + `) VALUES `
+func GetInsertParamsTransaction(txs []model.Transaction) (query string, values []interface{}) {
+	numFields := len(transactionParams)
+	query = `INSERT INTO transactions (` + strings.Join(transactionParams, ",") + `) VALUES `
 	values = []interface{}{}
-	for i, block := range blocks {
+	for i, tx := range txs {
 		values = append(values,
-			block.Difficulty,
-			block.ExtraData,
-			block.GasLimit,
-			block.GasUsed,
-			block.Hash,
-			block.LogsBloom,
-			block.Miner,
-			block.MixHash,
-			block.Nonce,
-			block.Number,
-			block.ParentHash,
-			block.ReceiptsRoot,
-			block.Sha3Uncles,
-			block.Size,
-			block.StateRoot,
-			block.Timestamp,
-			block.TotalDifficulty,
-			block.TransactionsRoot,
-			block.TransactionCount,
+			tx.BlockHash,
+			tx.BlockNumber,
+			tx.From,
+			tx.Gas,
+			tx.GasPrice,
+			tx.Hash,
+			tx.Input,
+			tx.Nonce,
+			tx.R,
+			tx.S,
+			tx.To,
+			tx.TransactionIndex,
+			tx.V,
+			tx.Value,
 		)
 		n := i * numFields
 		query += `(`

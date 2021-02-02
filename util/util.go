@@ -6,11 +6,26 @@ import (
 )
 
 // HexToDec convert hexa string to integer number
-func HexToDec(hexaString string) int {
-	numberStr := hexaString[2:]
+func HexToDec(hexNum string) int {
+	numberStr := hexNum[2:] // Remove 0x
 	output, err := strconv.ParseInt(numberStr, 16, 64)
 	if err != nil {
 		fmt.Println(err)
 	}
 	return int(output)
+}
+
+// GeneratePatition get export block partitions
+func GeneratePatition(startBlock, endBlock, partitionSize int) [][]int {
+	numPartitions := (endBlock-startBlock)/partitionSize + 1
+	ret := make([][]int, numPartitions)
+
+	for i, start := 0, startBlock; start <= endBlock; i, start = i+1, start+partitionSize {
+		end := start + partitionSize - 1
+		if end > endBlock {
+			end = endBlock
+		}
+		ret[i] = []int{start, end}
+	}
+	return ret
 }

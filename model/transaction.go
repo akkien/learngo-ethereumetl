@@ -1,5 +1,7 @@
 package model
 
+import "github.com/akkien/ethereumetl/util"
+
 // TransactionRPC RPC response
 type TransactionRPC struct {
 	BlockHash        string `json:"blockHash"`
@@ -42,17 +44,39 @@ CREATE TABLE transactions (
 // Transaction for PostgreSQL
 type Transaction struct {
 	BlockHash        string `json:"blockHash"`
-	BlockNumber      string `json:"blockNumber"`
+	BlockNumber      int    `json:"blockNumber"`
 	From             string `json:"from"`
-	Gas              string `json:"gas"`
-	GasPrice         string `json:"gasPrice"`
+	Gas              int    `json:"gas"`
+	GasPrice         int    `json:"gasPrice"`
 	Hash             string `json:"hash"`
 	Input            string `json:"input"`
-	Nonce            string `json:"nonce"`
+	Nonce            int    `json:"nonce"`
 	R                string `json:"r"`
 	S                string `json:"s"`
 	To               string `json:"to"`
-	TransactionIndex string `json:"transactionIndex"`
+	TransactionIndex int    `json:"transactionIndex"`
 	V                string `json:"v"`
-	Value            string `json:"value"`
+	Value            string `json:"value"` ///////////////////////// TOTO: change type to big.Int
+}
+
+// mapTransaction map rpc result to block
+func mapTransaction(in TransactionRPC) Transaction {
+	out := Transaction{}
+
+	out.BlockHash = in.BlockHash
+	out.BlockNumber = util.HexToDec(in.BlockNumber)
+	out.From = in.From
+	out.Gas = util.HexToDec(in.Gas)
+	out.GasPrice = util.HexToDec(in.GasPrice)
+	out.Hash = in.Hash
+	out.Input = in.Input
+	out.Nonce = util.HexToDec(in.Nonce)
+	out.R = in.R
+	out.S = in.S
+	out.To = in.To
+	out.TransactionIndex = util.HexToDec(in.TransactionIndex)
+	out.V = in.V
+	out.Value = in.Value
+
+	return out
 }

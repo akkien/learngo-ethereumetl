@@ -12,7 +12,17 @@ import (
 )
 
 // ParseBlocksAndTransactions parse blocks & transactions
-func ParseBlocksAndTransactions(blocks []uint64) {
+func ParseBlocksAndTransactions(blocks []uint64,
+
+// startBlock,
+// endBlock,
+// batchSize,
+// batchWeb3Provider,
+// maxWorkers,
+// itemExporter
+) {
+	RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
+	//RopstenHTTP := "https://ropsten.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
 	connStr := "postgres://akkien:trungkien@127.0.0.1:5432/ropsten?sslmode=disable"
 	pg, err := sqlx.Open("postgres", connStr)
 	if err != nil {
@@ -28,28 +38,28 @@ func ParseBlocksAndTransactions(blocks []uint64) {
 		if err != nil {
 			fmt.Println("Error generate block request")
 		}
-		response := rpc.Call(blockReq)
+		response := rpc.Call(RopstenHTTP, blockReq)
 
-		var blockRes []rpc.BlockRPCResponse
+		var blockRes []model.BlockRPCResponse
 		err = json.Unmarshal(response, &blockRes)
 		if err != nil {
 			fmt.Println("Error parse result")
 		}
 
-		blockRPC := blockRes[0].Result
-		block := model.MapBlock(blockRPC)
-		fmt.Println(block.Number)
+		blocks, txs := model.RPCResponseToBlock(&blockRes)
 
-		nextBlock := block
-		nextBlock.Number++
-
-		blockList := []model.Block{block, nextBlock}
-
-		query, values := db.GetInsertParamsBlock(blockList)
-		res, err := pg.Exec(query, values...)
+		blockQuery, blockValues := db.GetInsertParamsBlock(blocks)
+		res, err := pg.Exec(blockQuery, blockValues...)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("RES:", res)
+		fmt.Println("Inserted Block:", res)
+
+		txQuery, txValues := db.GetInsertParamsTransaction(txs)
+		res, err = pg.Exec(txQuery, txValues...)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Inserted Transactions:", res)
 	}
 }

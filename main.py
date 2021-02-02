@@ -1,17 +1,11 @@
-def longestUniqueSubsttr(string):
-    seen = {}
-    maximum_length = 0
-    start = 0
+def get_partitions(start_block, end_block, partition_batch_size):
+    """Yield partitions based on input data type."""
+    for batch_start_block in range(start_block, end_block + 1, partition_batch_size):
+        batch_end_block = batch_start_block + partition_batch_size - 1
+        if batch_end_block > end_block:
+            batch_end_block = end_block
+        yield batch_start_block, batch_end_block
 
-    for end in range(len(string)):
 
-        # Checking if we have already seen the element or not
-        if string[end] in seen:
-            # If we have seen the number, move the start pointer
-            # to position after the last occurrence
-            start = max(start, seen[string[end]] + 1)
-
-        # Updating the last seen value of the character
-        seen[string[end]] = end
-        maximum_length = max(maximum_length, end-start + 1)
-    return maximum_length
+partitions = list(get_partitions(5, 20, 5))
+print(partitions)
