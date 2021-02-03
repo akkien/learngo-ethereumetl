@@ -25,7 +25,7 @@ func ExportAll(
 		fmt.Println("Connected")
 		db.SetMaxOpenConns(maxWorkers)
 
-		ParseBlocksAndTransactions([]uint64{11775341, 11775342})
+		ParseBlocksAndTransactions(11775341, 11775342)
 
 	}
 }

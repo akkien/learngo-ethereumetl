@@ -15,6 +15,15 @@ func HexToDec(hexNum string) int {
 	return int(output)
 }
 
+// MakeRange create range of item
+func MakeRange(min, max int) []int {
+	a := make([]int, max-min+1)
+	for i := range a {
+		a[i] = min + i
+	}
+	return a
+}
+
 // GeneratePatition get export block partitions
 func GeneratePatition(startBlock, endBlock, partitionSize int) [][]int {
 	numPartitions := (endBlock-startBlock)/partitionSize + 1

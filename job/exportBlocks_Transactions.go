@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/akkien/ethereumetl/util"
+
 	"github.com/akkien/ethereumetl/db"
 	"github.com/akkien/ethereumetl/model"
 	"github.com/akkien/ethereumetl/rpc"
@@ -12,14 +14,13 @@ import (
 )
 
 // ParseBlocksAndTransactions parse blocks & transactions
-func ParseBlocksAndTransactions(blocks []uint64,
-
-// startBlock,
-// endBlock,
-// batchSize,
-// batchWeb3Provider,
-// maxWorkers,
-// itemExporter
+func ParseBlocksAndTransactions(
+	startBlock int,
+	endBlock int,
+	//batchSize int,
+	// batchWeb3Provider,
+	// maxWorkers,
+	// itemExporter
 ) {
 	RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
 	//RopstenHTTP := "https://ropsten.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
@@ -34,7 +35,8 @@ func ParseBlocksAndTransactions(blocks []uint64,
 		fmt.Println("Connected")
 
 		// Start pulling
-		blockReq, err := rpc.GetBlockRequest(blocks, true)
+		blockRange := util.MakeRange(startBlock, endBlock)
+		blockReq, err := rpc.GetBlockRequest(blockRange, true)
 		if err != nil {
 			fmt.Println("Error generate block request")
 		}

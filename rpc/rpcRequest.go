@@ -8,11 +8,11 @@ import (
 )
 
 // GetBlockRequest generate get block rpc request
-func GetBlockRequest(blockNumbers []uint64, isIncludeTxs bool) ([]byte, error) {
+func GetBlockRequest(blockNumbers []int, isIncludeTxs bool) ([]byte, error) {
 	rpcs := make([]model.RPC, len(blockNumbers))
 
 	for idx, block := range blockNumbers {
-		blockHex := "0x" + strconv.FormatUint(block, 16)
+		blockHex := "0x" + strconv.FormatInt(int64(block), 16)
 		rpc := model.RPC{
 			Jsonrpc: "2.0",
 			Method:  "eth_getBlockByNumber",
