@@ -1,6 +1,10 @@
 package model
 
-import "github.com/akkien/ethereumetl/util"
+import (
+	"fmt"
+
+	"github.com/akkien/ethereumetl/util"
+)
 
 // TransactionRPC RPC response
 type TransactionRPC struct {
@@ -44,17 +48,17 @@ CREATE TABLE transactions (
 // Transaction for PostgreSQL
 type Transaction struct {
 	BlockHash        string `json:"blockHash"`
-	BlockNumber      int    `json:"blockNumber"`
+	BlockNumber      int64  `json:"blockNumber"`
 	From             string `json:"from"`
-	Gas              int    `json:"gas"`
-	GasPrice         int    `json:"gasPrice"`
+	Gas              int64  `json:"gas"`
+	GasPrice         int64  `json:"gasPrice"`
 	Hash             string `json:"hash"`
 	Input            string `json:"input"`
-	Nonce            int    `json:"nonce"`
+	Nonce            int64  `json:"nonce"`
 	R                string `json:"r"`
 	S                string `json:"s"`
 	To               string `json:"to"`
-	TransactionIndex int    `json:"transactionIndex"`
+	TransactionIndex int64  `json:"transactionIndex"`
 	V                string `json:"v"`
 	Value            string `json:"value"` ///////////////////////// TOTO: change type to big.Int
 }
@@ -62,21 +66,26 @@ type Transaction struct {
 // mapTransaction map rpc result to block
 func mapTransaction(in TransactionRPC) Transaction {
 	out := Transaction{}
+	var err error = nil
 
 	out.BlockHash = in.BlockHash
-	out.BlockNumber = util.HexToDec(in.BlockNumber)
+	out.BlockNumber, err = util.HexToDec(in.BlockNumber)
 	out.From = in.From
-	out.Gas = util.HexToDec(in.Gas)
-	out.GasPrice = util.HexToDec(in.GasPrice)
+	out.Gas, err = util.HexToDec(in.Gas)
+	out.GasPrice, err = util.HexToDec(in.GasPrice)
 	out.Hash = in.Hash
 	out.Input = in.Input
-	out.Nonce = util.HexToDec(in.Nonce)
+	out.Nonce, err = util.HexToDec(in.Nonce)
 	out.R = in.R
 	out.S = in.S
 	out.To = in.To
-	out.TransactionIndex = util.HexToDec(in.TransactionIndex)
+	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
 	out.V = in.V
 	out.Value = in.Value
+
+	if err != nil {
+		fmt.Println("Map transaction", err)
+	}
 
 	return out
 }

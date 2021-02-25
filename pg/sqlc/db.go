@@ -5,7 +5,6 @@ package pg
 import (
 	"context"
 	"database/sql"
-	"fmt"
 )
 
 type DBTX interface {

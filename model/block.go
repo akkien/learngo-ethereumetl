@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	"github.com/akkien/ethereumetl/util"
 )
 
@@ -30,51 +32,54 @@ type BlockRPC struct {
 
 // Block for PostgreSQL
 type Block struct {
-	Difficulty       int    `json:"difficulty" db:"difficulty"`
+	Difficulty       int64  `json:"difficulty" db:"difficulty"`
 	ExtraData        string `json:"extraData" db:"extra_data"`
-	GasLimit         int    `json:"gasLimit" db:"gas_limit"`
-	GasUsed          int    `json:"gasUsed" db:"gas_used"`
+	GasLimit         int64  `json:"gasLimit" db:"gas_limit"`
+	GasUsed          int64  `json:"gasUsed" db:"gas_used"`
 	Hash             string `json:"hash" db:"hash"`
 	LogsBloom        string `json:"logsBloom" db:"logs_bloom"`
 	Miner            string `json:"miner" db:"miner"`
 	MixHash          string `json:"mixHash" db:"mix_hash"`
 	Nonce            string `json:"nonce" db:"nonce"`
-	Number           int    `json:"number" db:"number"`
+	Number           int64  `json:"number" db:"number"`
 	ParentHash       string `json:"parentHash" db:"parent_hash"`
 	ReceiptsRoot     string `json:"receiptsRoot" db:"receipts_root"`
 	Sha3Uncles       string `json:"sha3Uncles" db:"sha3_uncles"`
-	Size             int    `json:"size" db:"size"`
+	Size             int64  `json:"size" db:"size"`
 	StateRoot        string `json:"stateRoot" db:"state_root"`
-	Timestamp        int    `json:"timestamp" db:"timestamp"`
-	TotalDifficulty  int    `json:"totalDifficulty" db:"total_difficulty"`
+	Timestamp        int64  `json:"timestamp" db:"timestamp"`
+	TotalDifficulty  int64  `json:"totalDifficulty" db:"total_difficulty"`
 	TransactionsRoot string `json:"transactionsRoot" db:"transactions_root"`
-	TransactionCount int    `json:"transactionCount" db:"transaction_count"`
+	TransactionCount int64  `json:"transactionCount" db:"transaction_count"`
 	CreatedTimestamp string `json:"createdTimestamp" db:"created_timestamp"`
 }
 
 func mapBlock(rpcBlock BlockRPC) Block {
 	out := Block{}
-
+	var err error
 	out.ExtraData = rpcBlock.ExtraData
-	out.Difficulty = util.HexToDec(rpcBlock.Difficulty)
+	out.Difficulty, err = util.HexToDec(rpcBlock.Difficulty)
+	if err != nil {
+		fmt.Println("block Difficulty", err)
+	}
 	out.ExtraData = rpcBlock.ExtraData
-	out.GasLimit = util.HexToDec(rpcBlock.GasLimit)
-	out.GasUsed = util.HexToDec(rpcBlock.GasUsed)
+	out.GasLimit, err = util.HexToDec(rpcBlock.GasLimit)
+	out.GasUsed, err = util.HexToDec(rpcBlock.GasUsed)
 	out.Hash = rpcBlock.Hash
 	out.LogsBloom = rpcBlock.LogsBloom
 	out.Miner = rpcBlock.Miner
 	out.MixHash = rpcBlock.MixHash
 	out.Nonce = rpcBlock.Nonce
-	out.Number = util.HexToDec(rpcBlock.Number)
+	out.Number, err = util.HexToDec(rpcBlock.Number)
 	out.ParentHash = rpcBlock.ParentHash
 	out.ReceiptsRoot = rpcBlock.ReceiptsRoot
 	out.Sha3Uncles = rpcBlock.Sha3Uncles
-	out.Size = util.HexToDec(rpcBlock.Size)
+	out.Size, err = util.HexToDec(rpcBlock.Size)
 	out.StateRoot = rpcBlock.StateRoot
-	out.Timestamp = util.HexToDec(rpcBlock.Timestamp)
-	out.TotalDifficulty = util.HexToDec(rpcBlock.TotalDifficulty)
+	out.Timestamp, err = util.HexToDec(rpcBlock.Timestamp)
+	out.TotalDifficulty, err = util.HexToDec(rpcBlock.TotalDifficulty)
 	out.TransactionsRoot = rpcBlock.TransactionsRoot
-	out.TransactionCount = len(rpcBlock.Transactions)
+	out.TransactionCount = int64(len(rpcBlock.Transactions))
 	out.CreatedTimestamp = ""
 
 	return out

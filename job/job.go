@@ -4,14 +4,16 @@ package job
 import (
 	"fmt"
 
+	"github.com/akkien/ethereumetl/util"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 //ExportAll : Export all data from block
 func ExportAll(
-	//startBlock int, endBlock int, paritionBatchSize int, providerURI string, batchSize int,
-
+	startBlock int, endBlock int, paritionBatchSize int, batchSize int,
+	providerURI string,
 	connStr string,
 	maxWorkers int,
 ) {
@@ -23,9 +25,12 @@ func ExportAll(
 			panic(err)
 		}
 		fmt.Println("Connected")
-		db.SetMaxOpenConns(maxWorkers)
+		db.SetMaxOpenConns(maxWorkers + 1)
 
-		ParseBlocksAndTransactions(11775341, 11775342)
-
+		blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)
+		for _, partition := range blockPartitions {
+			fmt.Println("Partition", partition)
+			ParseBlocksAndTransactions(partition[0], partition[1], providerURI, db, batchSize)
+		}
 	}
 }

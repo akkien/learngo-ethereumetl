@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/akkien/ethereumetl/util"
-
 	"github.com/akkien/ethereumetl/db"
 	"github.com/akkien/ethereumetl/model"
 	"github.com/akkien/ethereumetl/rpc"
+	"github.com/akkien/ethereumetl/util"
 
+	"github.com/gammazero/workerpool"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,51 +17,48 @@ import (
 func ParseBlocksAndTransactions(
 	startBlock int,
 	endBlock int,
-	//batchSize int,
-	// batchWeb3Provider,
+	providerURI string,
+	pg *sqlx.DB,
+	batchSize int,
 	// maxWorkers,
-	// itemExporter
+
 ) {
-	RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
-	//RopstenHTTP := "https://ropsten.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
-	connStr := "postgres://akkien:trungkien@127.0.0.1:5432/ropsten?sslmode=disable"
-	pg, err := sqlx.Open("postgres", connStr)
-	if err != nil {
-		panic(err)
-	} else {
-		if err = pg.Ping(); err != nil {
-			panic(err)
-		}
-		fmt.Println("Connected")
+	wp := workerpool.New(10)
 
-		// Start pulling
-		blockRange := util.MakeRange(startBlock, endBlock)
-		blockReq, err := rpc.GetBlockRequest(blockRange, true)
-		if err != nil {
-			fmt.Println("Error generate block request")
-		}
-		response := rpc.Call(RopstenHTTP, blockReq)
+	// Start pulling
+	blockBatchs := util.GeneratePatitions(startBlock, endBlock, batchSize)
+	for _, blockBatch := range blockBatchs {
+		start, end := blockBatch[0], blockBatch[1]
+		wp.Submit(func() {
+			blockRange := util.MakeRange(start, end)
+			blockReq, err := rpc.GetBlockRequest(blockRange, true)
+			if err != nil {
+				fmt.Println("Error generate block request", err)
+			}
+			response := rpc.Call(providerURI, blockReq)
 
-		var blockRes []model.BlockRPCResponse
-		err = json.Unmarshal(response, &blockRes)
-		if err != nil {
-			fmt.Println("Error parse result")
-		}
+			var blockRes []model.BlockRPCResponse
+			err = json.Unmarshal(response, &blockRes)
+			if err != nil {
+				fmt.Println("Error parse blocks result")
+			}
 
-		blocks, txs := model.RPCResponseToBlock(&blockRes)
+			blocks, txs := model.RPCResponseToBlock(&blockRes)
 
-		blockQuery, blockValues := db.GetInsertParamsBlock(blocks)
-		res, err := pg.Exec(blockQuery, blockValues...)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("Inserted Block:", res)
+			blockQuery, blockValues := db.GetInsertParamsBlock(blocks)
+			res, err := pg.Exec(blockQuery, blockValues...)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("Inserted Blocks:", res)
 
-		txQuery, txValues := db.GetInsertParamsTransaction(txs)
-		res, err = pg.Exec(txQuery, txValues...)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println("Inserted Transactions:", res)
+			txQuery, txValues := db.GetInsertParamsTransaction(txs)
+			res, err = pg.Exec(txQuery, txValues...)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("Inserted Transactions:", res)
+		})
 	}
+	wp.StopWait()
 }

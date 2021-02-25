@@ -1,6 +1,10 @@
 package model
 
-import "github.com/akkien/ethereumetl/util"
+import (
+	"fmt"
+
+	"github.com/akkien/ethereumetl/util"
+)
 
 //LogRPC : transaction log
 type LogRPC struct {
@@ -34,28 +38,33 @@ type LogRPC struct {
 type Log struct {
 	Address          string   `json:"address"`
 	BlockHash        string   `json:"blockHash"`
-	BlockNumber      int      `json:"blockNumber"`
+	BlockNumber      int64    `json:"blockNumber"`
 	Data             string   `json:"data"`
-	LogIndex         int      `json:"logIndex"`
+	LogIndex         int64    `json:"logIndex"`
 	Removed          bool     `json:"removed"`
 	Topics           []string `json:"topics"`
 	TransactionHash  string   `json:"transactionHash"`
-	TransactionIndex int      `json:"transactionIndex"`
+	TransactionIndex int64    `json:"transactionIndex"`
 }
 
 // mapTransaction map rpc result to block
 func mapLog(in LogRPC) Log {
 	out := Log{}
+	var err error
 
 	out.Address = in.Address
 	out.BlockHash = in.BlockHash
-	out.BlockNumber = util.HexToDec(in.BlockNumber)
+	out.BlockNumber, err = util.HexToDec(in.BlockNumber)
 	out.Data = in.Data
-	out.LogIndex = util.HexToDec(in.LogIndex)
+	out.LogIndex, err = util.HexToDec(in.LogIndex)
 	out.Removed = in.Removed
 	out.Topics = in.Topics
 	out.TransactionHash = in.TransactionHash
-	out.TransactionIndex = util.HexToDec(in.TransactionIndex)
+	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
+
+	if err != nil {
+		fmt.Println("Map log", err)
+	}
 
 	return out
 }

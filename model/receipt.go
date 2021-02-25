@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	"github.com/akkien/ethereumetl/util"
 )
 
@@ -23,17 +25,17 @@ type ReceiptRPC struct {
 // Receipt : transaction receipt
 type Receipt struct {
 	BlockHash         string      `json:"blockHash"`
-	BlockNumber       int         `json:"blockNumber"`
+	BlockNumber       int64       `json:"blockNumber"`
 	ContractAddress   interface{} `json:"contractAddress"`
-	CumulativeGasUsed int         `json:"cumulativeGasUsed"`
+	CumulativeGasUsed int64       `json:"cumulativeGasUsed"`
 	From              string      `json:"from"`
-	GasUsed           int         `json:"gasUsed"`
-	LogsCount         int         `json:"logs"`
+	GasUsed           int64       `json:"gasUsed"`
+	LogsCount         int64       `json:"logs"`
 	LogsBloom         string      `json:"logsBloom"`
-	Status            int         `json:"status"`
+	Status            int64       `json:"status"`
 	To                string      `json:"to"`
 	TransactionHash   string      `json:"transactionHash"`
-	TransactionIndex  int         `json:"transactionIndex"`
+	TransactionIndex  int64       `json:"transactionIndex"`
 }
 
 // CREATE TABLE receipts (
@@ -55,19 +57,23 @@ type Receipt struct {
 // mapTransaction map rpc result to block
 func mapReceipt(in ReceiptRPC) Receipt {
 	out := Receipt{}
-
+	var err error
 	out.BlockHash = in.BlockHash
-	out.BlockNumber = util.HexToDec(in.BlockNumber)
+	out.BlockNumber, err = util.HexToDec(in.BlockNumber)
 	out.ContractAddress = in.ContractAddress
-	out.CumulativeGasUsed = util.HexToDec(in.CumulativeGasUsed)
+	out.CumulativeGasUsed, err = util.HexToDec(in.CumulativeGasUsed)
 	out.From = in.From
-	out.GasUsed = util.HexToDec(in.GasUsed)
-	out.LogsCount = len(in.Logs)
+	out.GasUsed, err = util.HexToDec(in.GasUsed)
+	out.LogsCount = int64(len(in.Logs))
 	out.LogsBloom = in.LogsBloom
-	out.Status = util.HexToDec(in.Status)
+	out.Status, err = util.HexToDec(in.Status)
 	out.To = in.To
 	out.TransactionHash = in.TransactionHash
-	out.TransactionIndex = util.HexToDec(in.TransactionIndex)
+	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
+
+	if err != nil {
+		fmt.Println("Map receipt", err)
+	}
 
 	return out
 }

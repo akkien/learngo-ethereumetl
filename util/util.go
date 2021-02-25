@@ -1,18 +1,13 @@
 package util
 
 import (
-	"fmt"
 	"strconv"
 )
 
 // HexToDec convert hexa string to integer number
-func HexToDec(hexNum string) int {
+func HexToDec(hexNum string) (int64, error) {
 	numberStr := hexNum[2:] // Remove 0x
-	output, err := strconv.ParseInt(numberStr, 16, 64)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return int(output)
+	return strconv.ParseInt(numberStr, 16, 64)
 }
 
 // MakeRange create range of item
@@ -24,8 +19,8 @@ func MakeRange(min, max int) []int {
 	return a
 }
 
-// GeneratePatition get export block partitions
-func GeneratePatition(startBlock, endBlock, partitionSize int) [][]int {
+// GeneratePatitions get export block partitions
+func GeneratePatitions(startBlock, endBlock, partitionSize int) [][]int {
 	numPartitions := (endBlock-startBlock)/partitionSize + 1
 	ret := make([][]int, numPartitions)
 
