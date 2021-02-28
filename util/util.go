@@ -33,3 +33,25 @@ func GeneratePatitions(startBlock, endBlock, partitionSize int) [][]int {
 	}
 	return ret
 }
+
+// GenerateBatchs get export txs, address partitions
+func GenerateBatchs(input []string, batchSize int) [][]string {
+	length := len(input)
+
+	numBatch := 0
+	if length%batchSize == 0 {
+		numBatch = length / batchSize
+	} else {
+		numBatch = length/batchSize + 1
+	}
+
+	ret := make([][]string, numBatch)
+	for i, j := 0, 0; i < len(input); i, j = i+batchSize, j+1 {
+		if i+batchSize < length {
+			ret[j] = input[i : i+batchSize]
+		} else {
+			ret[j] = input[i:length]
+		}
+	}
+	return ret
+}

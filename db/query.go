@@ -46,6 +46,30 @@ var transactionParams = []string{
 	"value",
 }
 
+var receiptParams = []string{
+	"block_hash",
+	"block_number",
+	"contract_address",
+	"cumulative_gas_used",
+	"gas_used",
+	"logs_count",
+	"logs_bloom",
+	"status",
+	"transaction_hash",
+	"transaction_index",
+}
+
+var logParams = []string{
+	"address",
+	"block_number",
+	"data",
+	"log_index",
+	"removed",
+	"topics",
+	"transaction_hash",
+	"transaction_index",
+}
+
 // Create create table
 func Create(table string) string {
 	createBlock := `
@@ -171,6 +195,62 @@ func GetInsertParamsTransaction(txs []model.Transaction) (query string, values [
 			tx.TransactionIndex,
 			tx.V,
 			tx.Value,
+		)
+		n := i * numFields
+		query += `(`
+		for j := 0; j < numFields; j++ {
+			query += `$` + strconv.Itoa(n+j+1) + `,`
+		}
+		query = query[:len(query)-1] + `),`
+	}
+	query = query[:len(query)-1] // remove the trailing comma
+	return
+}
+
+// GetInsertParamsReceipt new record to database
+func GetInsertParamsReceipt(receipts []model.Receipt) (query string, values []interface{}) {
+	numFields := len(receiptParams)
+	query = `INSERT INTO receipts (` + strings.Join(receiptParams, ",") + `) VALUES `
+	values = []interface{}{}
+	for i, item := range receipts {
+		values = append(values,
+			item.BlockHash,
+			item.BlockNumber,
+			item.ContractAddress,
+			item.CumulativeGasUsed,
+			item.GasUsed,
+			item.LogsCount,
+			item.LogsBloom,
+			item.Status,
+			item.TransactionHash,
+			item.TransactionIndex,
+		)
+		n := i * numFields
+		query += `(`
+		for j := 0; j < numFields; j++ {
+			query += `$` + strconv.Itoa(n+j+1) + `,`
+		}
+		query = query[:len(query)-1] + `),`
+	}
+	query = query[:len(query)-1] // remove the trailing comma
+	return
+}
+
+// GetInsertParamsLog new record to database
+func GetInsertParamsLog(logs []model.Log) (query string, values []interface{}) {
+	numFields := len(logParams)
+	query = `INSERT INTO logs (` + strings.Join(logParams, ",") + `) VALUES `
+	values = []interface{}{}
+	for i, item := range logs {
+		values = append(values,
+			item.Address,
+			item.BlockNumber,
+			item.Data,
+			item.LogIndex,
+			item.Removed,
+			item.Topics,
+			item.TransactionHash,
+			item.TransactionIndex,
 		)
 		n := i * numFields
 		query += `(`

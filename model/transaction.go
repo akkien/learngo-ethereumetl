@@ -24,27 +24,6 @@ type TransactionRPC struct {
 	Value            string `json:"value"`
 }
 
-/*
-CREATE TABLE transactions (
-    block_hash CHAR(66),
-    block_number BIGINT REFERENCES blocks(number),
-    from_address CHAR(42),
-    gas BIGINT,
-	gas_price BIGINT,
-	hash CHAR(66) PRIMARY KEY,
-	input TEXT,
-	nonce BIGINT,
-	r TEXT,
-	s TEXT,
-	to_address CHAR(42),
-	transaction_index SMALLINT,
-	v TEXT,
-	value DECIMAL(38,0),
-    created_timestamp TIMESTAMPTZ NOT NULL
-		DEFAULT CURRENT_TIMESTAMP
-);
-*/
-
 // Transaction for PostgreSQL
 type Transaction struct {
 	BlockHash        string `json:"blockHash"`

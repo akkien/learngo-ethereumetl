@@ -38,22 +38,6 @@ type Receipt struct {
 	TransactionIndex  int64       `json:"transactionIndex"`
 }
 
-// CREATE TABLE receipts (
-// 	block_hash CHAR(66),
-// 	block_number BIGINT,
-// 	contract_address CHAR(42),
-// 	cumulative_gas_used BIGINT,
-// 	gas_used BIGINT,
-// 	logs_count SMALLINT,
-// 	logs_bloom TEXT,
-// 	status BOOLEAN,
-//     transaction_hash CHAR(66) PRIMARY KEY REFERENCES transactions(hash),
-//     transaction_index SMALLINT,
-//     root CHAR(66),
-//     created_timestamp TIMESTAMPTZ NOT NULL
-// 		DEFAULT CURRENT_TIMESTAMP
-// );
-
 // mapTransaction map rpc result to block
 func mapReceipt(in ReceiptRPC) Receipt {
 	out := Receipt{}
@@ -62,12 +46,10 @@ func mapReceipt(in ReceiptRPC) Receipt {
 	out.BlockNumber, err = util.HexToDec(in.BlockNumber)
 	out.ContractAddress = in.ContractAddress
 	out.CumulativeGasUsed, err = util.HexToDec(in.CumulativeGasUsed)
-	out.From = in.From
 	out.GasUsed, err = util.HexToDec(in.GasUsed)
 	out.LogsCount = int64(len(in.Logs))
 	out.LogsBloom = in.LogsBloom
 	out.Status, err = util.HexToDec(in.Status)
-	out.To = in.To
 	out.TransactionHash = in.TransactionHash
 	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
 

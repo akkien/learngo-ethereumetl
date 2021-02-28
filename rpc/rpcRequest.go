@@ -28,3 +28,24 @@ func GetBlockRequest(blockNumbers []int, isIncludeTxs bool) ([]byte, error) {
 	}
 	return data, nil
 }
+
+// GetReceiptRequest generate get block rpc request
+func GetReceiptRequest(input []string) ([]byte, error) {
+	rpcs := make([]model.RPC, len(input))
+
+	for idx, param := range input {
+		rpc := model.RPC{
+			Jsonrpc: "2.0",
+			Method:  "eth_getTransactionReceipt",
+			Params:  []interface{}{param},
+			ID:      idx,
+		}
+		rpcs[idx] = rpc
+	}
+
+	data, err := json.Marshal(&rpcs)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}

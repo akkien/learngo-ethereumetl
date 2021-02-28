@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/akkien/ethereumetl/util"
-
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -30,7 +29,9 @@ func ExportAll(
 		blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)
 		for _, partition := range blockPartitions {
 			fmt.Println("Partition", partition)
-			ParseBlocksAndTransactions(partition[0], partition[1], providerURI, db, batchSize)
+			ParseBlocksAndTransactions(partition[0], partition[1], providerURI, db, batchSize, maxWorkers)
 		}
+
+		ParseReceiptsAndLogs([]string{"0x1d805da0ea11dc41e7a1507523e8ce2ce0186216bc2bad9924c971696c1b7b17"}, providerURI, db, batchSize, maxWorkers)
 	}
 }
