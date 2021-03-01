@@ -26,8 +26,8 @@ func ParseReceiptsAndLogs(
 	txBatchs := util.GenerateBatchs(txsHash, batchSize)
 
 	for index, txsBatch := range txBatchs {
-
 		index := index
+
 		wp.Submit(func() {
 			// Export
 			blockReq, err := rpc.GetReceiptRequest(txsBatch)
@@ -48,24 +48,24 @@ func ParseReceiptsAndLogs(
 			if err != nil {
 				fmt.Println("Error parse blocks result")
 			}
-
 			receipts, logs := model.RPCResponseToReceipt(&receiptRes)
 
 			// Load
 			receiptQuery, receiptValues := db.GetInsertParamsReceipt(receipts)
 			res, err := pg.Exec(receiptQuery, receiptValues...)
 			if err != nil {
-				panic(err)
+				fmt.Println("Error insert receipts", err)
 			}
 			fmt.Println(index, "Inserted Receipts:", res)
 
-			logQuery, logValues := db.GetInsertParamsLog(logs)
-			res, err = pg.Exec(logQuery, logValues...)
-			if err != nil {
-				panic(err)
+			if len(logs) > 0 {
+				logQuery, logValues := db.GetInsertParamsLog(logs)
+				res, err = pg.Exec(logQuery, logValues...)
+				if err != nil {
+					fmt.Println("Error insert logs", err)
+				}
+				fmt.Println(index, "Inserted Logs:", res)
 			}
-			fmt.Println(index, "Inserted Logs:", res)
-
 		})
 	}
 	wp.StopWait()

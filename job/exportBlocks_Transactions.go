@@ -10,6 +10,7 @@ import (
 	"github.com/akkien/ethereumetl/rpc"
 	"github.com/akkien/ethereumetl/util"
 	"github.com/gammazero/workerpool"
+	"github.com/go-redis/redis"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -22,7 +23,8 @@ func ParseBlocksAndTransactions(
 	pg *sqlx.DB,
 	batchSize int,
 	maxWorkers int,
-
+	redisCli *redis.Client,
+	partitionTxsKey string,
 ) {
 	wp := workerpool.New(maxWorkers)
 	t1 := time.Now()
@@ -66,12 +68,23 @@ func ParseBlocksAndTransactions(
 			}
 			fmt.Println(index, "Inserted Blocks:", res)
 
-			txQuery, txValues := db.GetInsertParamsTransaction(txs)
-			res, err = pg.Exec(txQuery, txValues...)
-			if err != nil {
-				panic(err)
+			if len(txs) > 0 {
+				txQuery, txValues := db.GetInsertParamsTransaction(txs)
+				res, err = pg.Exec(txQuery, txValues...)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(index, "Inserted Transactions:", res)
+
+				// Push txs hash to redis
+				txsHash := make([]interface{}, len(txs))
+				for index, tx := range txs {
+					txsHash[index] = tx.Hash
+				}
+				if len(txs) > 0 {
+					redisCli.RPush(partitionTxsKey, txsHash...)
+				}
 			}
-			fmt.Println(index, "Inserted Transactions:", res)
 
 			time.Sleep(1 * time.Second)
 			t5 := time.Now()

@@ -3,8 +3,10 @@ package job
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/akkien/ethereumetl/util"
+	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -19,19 +21,37 @@ func ExportAll(
 	db, err := sqlx.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
-	} else {
-		if err = db.Ping(); err != nil {
-			panic(err)
-		}
-		fmt.Println("Connected")
-		db.SetMaxOpenConns(maxWorkers + 1)
-
-		blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)
-		for _, partition := range blockPartitions {
-			fmt.Println("Partition", partition)
-			ParseBlocksAndTransactions(partition[0], partition[1], providerURI, db, batchSize, maxWorkers)
-		}
-
-		ParseReceiptsAndLogs([]string{"0x1d805da0ea11dc41e7a1507523e8ce2ce0186216bc2bad9924c971696c1b7b17"}, providerURI, db, batchSize, maxWorkers)
 	}
+	if err = db.Ping(); err != nil {
+		panic(err)
+	}
+
+	redisCli := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	_, err = redisCli.Ping().Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Connected")
+	db.SetMaxOpenConns(maxWorkers + 1)
+
+	/** Parse Blocks & Transactions **/
+	blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)
+	partitionTxsKey := strconv.Itoa(startBlock) + "_" + strconv.Itoa(endBlock) + "-TXS"
+	for _, partition := range blockPartitions {
+		fmt.Println("Partition", partition)
+		ParseBlocksAndTransactions(partition[0], partition[1], providerURI, db, batchSize, maxWorkers, redisCli, partitionTxsKey)
+	}
+
+	/** Parse Receipts & Logs **/
+	txsHash, err := redisCli.LRange(partitionTxsKey, 0, -1).Result()
+	if err != nil {
+		panic(err)
+	}
+	redisCli.Del(partitionTxsKey)
+	ParseReceiptsAndLogs(txsHash, providerURI, db, batchSize, maxWorkers)
+
 }

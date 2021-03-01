@@ -20,9 +20,7 @@ func main() {
 
 	start := time.Now()
 
-	job.ExportAll(
-		11946583,
-		11946583, 1000, 5, RopstenHTTP, connStr, 5)
+	job.ExportAll(11946583, 11946583, 1000, 5, RopstenHTTP, connStr, 5)
 
 	elapsed := time.Since(start)
 	log.Printf("Parse block took %s", elapsed)
