@@ -14,6 +14,13 @@ type BlockRPCResponse struct {
 	Result  BlockRPC `json:"result"`
 }
 
+// BlockNumberRPCResponse RPC response
+type BlockNumberRPCResponse struct {
+	Jsonrpc string `json:"jsonrpc"`
+	ID      int    `json:"id"`
+	Result  string `json:"result"`
+}
+
 // RPC rpc call
 type RPC struct {
 	Jsonrpc string      `json:"jsonrpc"`

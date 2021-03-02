@@ -64,7 +64,7 @@ func ParseBlocksAndTransactions(
 			blockQuery, blockValues := db.GetInsertParamsBlock(blocks)
 			res, err := pg.Exec(blockQuery, blockValues...)
 			if err != nil {
-				panic(err)
+				fmt.Println("Error insert block", err)
 			}
 			fmt.Println(index, "Inserted Blocks:", res)
 
@@ -72,7 +72,7 @@ func ParseBlocksAndTransactions(
 				txQuery, txValues := db.GetInsertParamsTransaction(txs)
 				res, err = pg.Exec(txQuery, txValues...)
 				if err != nil {
-					panic(err)
+					fmt.Println("Error insert txs:", err)
 				}
 				fmt.Println(index, "Inserted Transactions:", res)
 

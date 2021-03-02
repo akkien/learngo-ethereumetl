@@ -25,6 +25,7 @@ func ExportAll(
 	if err = db.Ping(); err != nil {
 		panic(err)
 	}
+	db.SetMaxOpenConns(maxWorkers + 1)
 
 	redisCli := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -36,7 +37,6 @@ func ExportAll(
 		panic(err)
 	}
 	fmt.Println("Connected")
-	db.SetMaxOpenConns(maxWorkers + 1)
 
 	/** Parse Blocks & Transactions **/
 	blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)

@@ -27,6 +27,7 @@ func ParseReceiptsAndLogs(
 
 	for index, txsBatch := range txBatchs {
 		index := index
+		txsBatch := txsBatch
 
 		wp.Submit(func() {
 			// Export
@@ -46,7 +47,7 @@ func ParseReceiptsAndLogs(
 			var receiptRes []model.ReceiptRPCResponse
 			err = json.Unmarshal(response, &receiptRes)
 			if err != nil {
-				fmt.Println("Error parse blocks result")
+				fmt.Println("Error parse receipts result")
 			}
 			receipts, logs := model.RPCResponseToReceipt(&receiptRes)
 

@@ -24,18 +24,18 @@ type ReceiptRPC struct {
 
 // Receipt : transaction receipt
 type Receipt struct {
-	BlockHash         string      `json:"blockHash"`
-	BlockNumber       int64       `json:"blockNumber"`
-	ContractAddress   interface{} `json:"contractAddress"`
-	CumulativeGasUsed int64       `json:"cumulativeGasUsed"`
-	From              string      `json:"from"`
-	GasUsed           int64       `json:"gasUsed"`
-	LogsCount         int64       `json:"logs"`
-	LogsBloom         string      `json:"logsBloom"`
-	Status            int64       `json:"status"`
-	To                string      `json:"to"`
-	TransactionHash   string      `json:"transactionHash"`
-	TransactionIndex  int64       `json:"transactionIndex"`
+	BlockHash         string `json:"blockHash"`
+	BlockNumber       int64  `json:"blockNumber"`
+	ContractAddress   string `json:"contractAddress"`
+	CumulativeGasUsed int64  `json:"cumulativeGasUsed"`
+	From              string `json:"from"`
+	GasUsed           int64  `json:"gasUsed"`
+	LogsCount         int64  `json:"logs"`
+	LogsBloom         string `json:"logsBloom"`
+	Status            int64  `json:"status"`
+	To                string `json:"to"`
+	TransactionHash   string `json:"transactionHash"`
+	TransactionIndex  int64  `json:"transactionIndex"`
 }
 
 // mapTransaction map rpc result to block
@@ -44,7 +44,7 @@ func mapReceipt(in ReceiptRPC) Receipt {
 	var err error
 	out.BlockHash = in.BlockHash
 	out.BlockNumber, err = util.HexToDec(in.BlockNumber)
-	out.ContractAddress = in.ContractAddress
+	out.ContractAddress = fmt.Sprintf("%v", in.ContractAddress)
 	out.CumulativeGasUsed, err = util.HexToDec(in.CumulativeGasUsed)
 	out.GasUsed, err = util.HexToDec(in.GasUsed)
 	out.LogsCount = int64(len(in.Logs))

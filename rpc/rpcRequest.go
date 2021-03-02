@@ -49,3 +49,19 @@ func GetReceiptRequest(input []string) ([]byte, error) {
 	}
 	return data, nil
 }
+
+// GetBlockNumberRequest generate get latest block rpc request
+func GetBlockNumberRequest() ([]byte, error) {
+	rpc := model.RPC{
+		Jsonrpc: "2.0",
+		Method:  "eth_blockNumber",
+		Params:  []string{},
+		ID:      1,
+	}
+	rpcs := []model.RPC{rpc}
+	data, err := json.Marshal(&rpcs)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
