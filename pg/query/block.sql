@@ -1,1 +1,0 @@
-SELECT * FROM blocks LIMIT $1 OFFSET $2;

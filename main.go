@@ -40,7 +40,7 @@ func main() {
 			fmt.Println("Please provide valid block range")
 		}
 		start := time.Now()
-		//9759324
+
 		job.ExportAll(*startBlock, *endBlock, 100, 5, RopstenHTTP, connStr, 5)
 
 		elapsed := time.Since(start)
@@ -54,20 +54,26 @@ func main() {
 			blockReq, err := rpc.GetBlockNumberRequest()
 			if err != nil {
 				fmt.Println("Error generate block request", err)
+				return
 			}
+
 			response, err := rpc.Call(RopstenHTTP, blockReq)
 			if err != nil {
 				fmt.Println("Error call block rpc", err)
+				return
 			}
 
 			var blockRes []model.BlockNumberRPCResponse
 			err = json.Unmarshal(response, &blockRes)
 			if err != nil {
 				fmt.Println("Error parse blocks result")
+				return
 			}
+
 			newBlock, err := util.HexToDec(blockRes[0].Result)
 			if err != nil {
 				fmt.Println("Error converse block number")
+				return
 			}
 
 			// Export
