@@ -16,3 +16,25 @@ INFO	2022/04/05 22:34:23 main.go:49: Done
 INFO	2022/04/05 22:37:20 main.go:32: Hello
 INFO	2022/04/05 22:37:43 main.go:32: Hello
 INFO	2022/04/05 22:39:56 main.go:32: Hello
+INFO	2022/04/05 23:26:19 main.go:32: Hello
+INFO	2022/04/05 23:30:38 main.go:32: Hello
+INFO	2022/04/05 23:34:28 main.go:32: Hello
+INFO	2022/04/05 23:34:31 main.go:48: Parse block took 2.824504667s
+INFO	2022/04/05 23:34:31 main.go:49: Done
+INFO	2022/04/05 23:34:50 main.go:32: Hello
+INFO	2022/04/05 23:35:56 main.go:32: Hello
+INFO	2022/04/05 23:36:00 main.go:48: Parse block took 3.862300131s
+INFO	2022/04/05 23:36:00 main.go:49: Done
+INFO	2022/04/05 23:38:10 main.go:32: Hello
+INFO	2022/04/05 23:38:14 main.go:48: Parse block took 3.415743876s
+INFO	2022/04/05 23:38:14 main.go:49: Done
+INFO	2022/04/05 23:39:59 main.go:32: Hello
+INFO	2022/04/05 23:40:02 main.go:48: Parse block took 3.043031233s
+INFO	2022/04/05 23:40:02 main.go:49: Done
+INFO	2022/04/05 23:41:11 main.go:32: Hello
+INFO	2022/04/05 23:41:14 main.go:48: Parse block took 3.294521065s
+INFO	2022/04/05 23:41:14 main.go:49: Done
+INFO	2022/04/05 23:42:25 main.go:32: Hello
+INFO	2022/04/05 23:42:29 main.go:48: Parse block took 4.133643463s
+INFO	2022/04/05 23:42:29 main.go:49: Done
+INFO	2022/04/05 23:50:53 main.go:32: Hello

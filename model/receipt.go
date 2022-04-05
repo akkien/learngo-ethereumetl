@@ -49,7 +49,11 @@ func mapReceipt(in ReceiptRPC) Receipt {
 	out.GasUsed, err = util.HexToDec(in.GasUsed)
 	out.LogsCount = int64(len(in.Logs))
 	out.LogsBloom = in.LogsBloom
-	out.Status, err = util.HexToDec(in.Status)
+	if in.Status == "0x1" {
+		out.Status = 1
+	} else {
+		out.Status = 0
+	}
 	out.TransactionHash = in.TransactionHash
 	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
 

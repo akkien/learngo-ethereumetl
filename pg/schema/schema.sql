@@ -49,6 +49,8 @@ CREATE TABLE receipts (
     cumulative_gas_used BIGINT,
     gas_used BIGINT,
     contract_address CHAR(42),
+    logs_count INT,
+    logs_bloom TEXT,
     root CHAR(66),
     status BOOLEAN,
     created_timestamp TIMESTAMPTZ NOT NULL
@@ -59,12 +61,11 @@ CREATE TABLE logs (
     log_index SMALLINT,
     transaction_hash CHAR(66) REFERENCES transactions(hash),
     transaction_index SMALLINT,
-    block_hash CHAR(66),
     block_number BIGINT,
     address CHAR(42),
     data TEXT,
     topics TEXT,
-    decoded_value JSON,
+    removed BOOLEAN,
     created_timestamp TIMESTAMPTZ NOT NULL
 		DEFAULT CURRENT_TIMESTAMP,
 CONSTRAINT pk_logs PRIMARY KEY (transaction_hash, log_index)
@@ -84,7 +85,6 @@ CREATE TABLE traces (
 	error TEXT,
 	time TEXT,
 	calls JSON,
-	jupviec_feature TEXT,
     created_timestamp TIMESTAMPTZ NOT NULL
 		DEFAULT CURRENT_TIMESTAMP
 );
@@ -103,7 +103,6 @@ CREATE TABLE internal_transactions (
 	error TEXT,
 	time TEXT,
 	call_depth TEXT,
-	decoded_input JSON,
     created_timestamp TIMESTAMPTZ NOT NULL
 		DEFAULT CURRENT_TIMESTAMP
 );

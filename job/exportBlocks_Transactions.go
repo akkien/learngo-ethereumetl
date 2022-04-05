@@ -69,7 +69,6 @@ func ParseBlocksAndTransactions(
 			fmt.Println(index, "Inserted Blocks:", res)
 
 			if len(txs) > 0 {
-				fmt.Println("txs[0]", txs[0])
 				txQuery, txValues := db.GetInsertParamsTransaction(txs)
 
 				res, err = pg.Exec(txQuery, txValues...)
