@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/akkien/ethereumetl/job"
@@ -14,17 +15,28 @@ import (
 )
 
 func main() {
-	var mode = flag.String("m", "realtime", "mode to execute the module: pasttime / realtime")
-	var startBlock = flag.Int("s", -1, "start block: block would be parsed from")
-	var endBlock = flag.Int("e", -1, "end block: block would be parsed to")
+	var mode = flag.String("mode", "", "mode to execute the module: pasttime / realtime")
+	var startBlock = flag.Int("start", -1, "start block: block would be parsed from")
+	var endBlock = flag.Int("end", -1, "end block: block would be parsed to")
 	flag.Parse()
 
-	//RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
+	// Setup Log
+	LOG_FILE := "./parser.log"
+	logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer logFile.Close()
+
+	logger := log.New(logFile, "INFO\t", log.Ldate|log.Ltime|log.Lshortfile)
+	logger.Println("Hello")
+
+	// RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
 	RopstenHTTP := "https://ropsten.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
 	connStr := "postgres://postgres:mysecret@127.0.0.1:5432/explorer?sslmode=disable"
 
 	if *mode == "pasttime" {
-		if *startBlock <= 0 || *endBlock <= 0 || *startBlock < *endBlock {
+		if *startBlock <= 0 || *endBlock <= 0 || *startBlock > *endBlock {
 			fmt.Println("Please provide valid block range")
 		}
 		start := time.Now()
@@ -32,8 +44,9 @@ func main() {
 		job.ExportAll(*startBlock, *endBlock, 100, 5, RopstenHTTP, connStr, 5)
 
 		elapsed := time.Since(start)
-		log.Printf("Parse block took %s", elapsed)
-		fmt.Println("Done")
+
+		logger.Printf("Parse block took %s", elapsed)
+		logger.Println("Done")
 	} else if *mode == "realtime" {
 		lastBlock := -1
 		var parse = func() {

@@ -36,7 +36,7 @@ func ExportAll(
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Connected")
+	fmt.Println("Database Connected")
 
 	/** Parse Blocks & Transactions **/
 	blockPartitions := util.GeneratePatitions(startBlock, endBlock, paritionBatchSize)

@@ -39,7 +39,7 @@ type Transaction struct {
 	To               string `json:"to"`
 	TransactionIndex int64  `json:"transactionIndex"`
 	V                string `json:"v"`
-	Value            string `json:"value"` ///////////////////////// TOTO: change type to big.Int
+	Value            int64  `json:"value"` ///////////////////////// TOTO: change type to big.Int
 }
 
 // mapTransaction map rpc result to block
@@ -60,7 +60,7 @@ func mapTransaction(in TransactionRPC) Transaction {
 	out.To = in.To
 	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
 	out.V = in.V
-	out.Value = in.Value
+	out.Value, err = util.HexToDec(in.Value)
 
 	if err != nil {
 		fmt.Println("Map transaction", err)

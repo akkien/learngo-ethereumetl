@@ -1,0 +1,18 @@
+INFO	2022/04/05 20:34:09 main.go:24: Hello
+INFO	2022/04/05 21:30:26 main.go:32: Hello
+INFO	2022/04/05 21:33:19 main.go:32: Hello
+INFO	2022/04/05 21:35:51 main.go:32: Hello
+INFO	2022/04/05 21:53:12 main.go:32: Hello
+INFO	2022/04/05 22:15:29 main.go:32: Hello
+INFO	2022/04/05 22:15:46 main.go:32: Hello
+INFO	2022/04/05 22:30:42 main.go:32: Hello
+INFO	2022/04/05 22:30:45 main.go:48: Parse block took 2.489636683s
+INFO	2022/04/05 22:30:45 main.go:49: Done
+INFO	2022/04/05 22:32:15 main.go:32: Hello
+INFO	2022/04/05 22:33:55 main.go:32: Hello
+INFO	2022/04/05 22:34:20 main.go:32: Hello
+INFO	2022/04/05 22:34:23 main.go:48: Parse block took 2.734006719s
+INFO	2022/04/05 22:34:23 main.go:49: Done
+INFO	2022/04/05 22:37:20 main.go:32: Hello
+INFO	2022/04/05 22:37:43 main.go:32: Hello
+INFO	2022/04/05 22:39:56 main.go:32: Hello

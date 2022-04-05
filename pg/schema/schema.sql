@@ -23,19 +23,20 @@ CREATE TABLE blocks (
 );
 
 CREATE TABLE transactions (
-    hash CHAR(66) PRIMARY KEY,
-    nonce BIGINT,
     block_hash CHAR(66),
     block_number BIGINT REFERENCES blocks(number),
-    transaction_index SMALLINT,
     from_address CHAR(42),
-    to_address CHAR(42),
-    value DECIMAL(38,0),
     gas BIGINT,
     gas_price BIGINT,
+    hash CHAR(66) PRIMARY KEY,
     input TEXT,
-    block_timestamp BIGINT,
-    decoded_input JSON,
+    nonce BIGINT,
+    r CHAR(66),
+    s CHAR(66),
+    to_address CHAR(42),
+    transaction_index SMALLINT,
+    v VARCHAR(66),
+    value DECIMAL(38,0),
     created_timestamp TIMESTAMPTZ NOT NULL
 		DEFAULT CURRENT_TIMESTAMP
 );

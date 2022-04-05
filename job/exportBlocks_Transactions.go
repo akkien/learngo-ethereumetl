@@ -58,7 +58,7 @@ func ParseBlocksAndTransactions(
 			blocks, txs := model.RPCResponseToBlock(&blockRes)
 
 			t3 := time.Now()
-			fmt.Println("transferTime", index, t3.Sub(t1))
+			fmt.Println(index, "transferTime", t3.Sub(t1))
 
 			// Load
 			blockQuery, blockValues := db.GetInsertParamsBlock(blocks)
@@ -69,7 +69,9 @@ func ParseBlocksAndTransactions(
 			fmt.Println(index, "Inserted Blocks:", res)
 
 			if len(txs) > 0 {
+				fmt.Println("txs[0]", txs[0])
 				txQuery, txValues := db.GetInsertParamsTransaction(txs)
+
 				res, err = pg.Exec(txQuery, txValues...)
 				if err != nil {
 					fmt.Println("Error insert txs:", err)
