@@ -12,8 +12,7 @@ The project is inspired by Python Ethereum ETL: <https://github.com/blockchain-e
 
 Create database tables by running sql script at: pg/schema/schema.sql
 
-2. Start redis database on localhost
-3. Build application: run `make build`
+2. Build application: run `make build`
 
 ## Start application
 
