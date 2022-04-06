@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"math/big"
 
 	"github.com/akkien/ethereumetl/util"
 )
@@ -26,20 +27,20 @@ type TransactionRPC struct {
 
 // Transaction for PostgreSQL
 type Transaction struct {
-	BlockHash        string `json:"blockHash"`
-	BlockNumber      int64  `json:"blockNumber"`
-	From             string `json:"from"`
-	Gas              int64  `json:"gas"`
-	GasPrice         int64  `json:"gasPrice"`
-	Hash             string `json:"hash"`
-	Input            string `json:"input"`
-	Nonce            int64  `json:"nonce"`
-	R                string `json:"r"`
-	S                string `json:"s"`
-	To               string `json:"to"`
-	TransactionIndex int64  `json:"transactionIndex"`
-	V                string `json:"v"`
-	Value            int64  `json:"value"` ///////////////////////// TOTO: change type to big.Int
+	BlockHash        string  `json:"blockHash"`
+	BlockNumber      int64   `json:"blockNumber"`
+	From             string  `json:"from"`
+	Gas              int64   `json:"gas"`
+	GasPrice         int64   `json:"gasPrice"`
+	Hash             string  `json:"hash"`
+	Input            string  `json:"input"`
+	Nonce            int64   `json:"nonce"`
+	R                string  `json:"r"`
+	S                string  `json:"s"`
+	To               string  `json:"to"`
+	TransactionIndex int64   `json:"transactionIndex"`
+	V                string  `json:"v"`
+	Value            big.Int `json:"value"` ///////////////////////// TOTO: change type to big.Int
 }
 
 // mapTransaction map rpc result to block
@@ -60,7 +61,7 @@ func mapTransaction(in TransactionRPC) Transaction {
 	out.To = in.To
 	out.TransactionIndex, err = util.HexToDec(in.TransactionIndex)
 	out.V = in.V
-	out.Value, err = util.HexToDec(in.Value)
+	out.Value.SetString(in.Value[2:], 16)
 
 	if err != nil {
 		fmt.Println("Map transaction", err)

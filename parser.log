@@ -54,3 +54,7 @@ INFO	2022/04/06 14:35:31 main.go:51: Parse blocks 1001001 to 1002000 took 12.723
 INFO	2022/04/06 14:35:31 main.go:52: Done
 INFO	2022/04/06 14:45:40 main.go:51: Parse blocks 1001001 to 1002000 took 8.076084142s
 INFO	2022/04/06 14:45:40 main.go:52: Done
+INFO	2022/04/06 16:15:49 main.go:51: Parse blocks 1001001 to 1002000 took 6.788889222s
+INFO	2022/04/06 16:15:49 main.go:52: Done
+INFO	2022/04/06 16:20:06 main.go:51: Parse blocks 1001001 to 1002000 took 9.413900833s
+INFO	2022/04/06 16:20:06 main.go:52: Done

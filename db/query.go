@@ -194,7 +194,7 @@ func GetInsertParamsTransaction(txs []model.Transaction) (query string, values [
 			tx.To,
 			tx.TransactionIndex,
 			tx.V,
-			tx.Value,
+			tx.Value.String(),
 		)
 		n := i * numFields
 		query += `(`
