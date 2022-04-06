@@ -38,3 +38,7 @@ INFO	2022/04/05 23:42:25 main.go:32: Hello
 INFO	2022/04/05 23:42:29 main.go:48: Parse block took 4.133643463s
 INFO	2022/04/05 23:42:29 main.go:49: Done
 INFO	2022/04/05 23:50:53 main.go:32: Hello
+INFO	2022/04/05 23:55:30 main.go:32: Hello
+INFO	2022/04/06 00:04:23 main.go:32: Hello
+INFO	2022/04/06 00:04:36 main.go:48: Parse block took 12.862794982s
+INFO	2022/04/06 00:04:36 main.go:49: Done

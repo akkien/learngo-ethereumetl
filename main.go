@@ -41,7 +41,7 @@ func main() {
 		}
 		start := time.Now()
 
-		job.ExportAll(*startBlock, *endBlock, 100, 5, RopstenHTTP, connStr, 5)
+		job.ExportAll(*startBlock, *endBlock, 1000, 50, RopstenHTTP, connStr, 5)
 
 		elapsed := time.Since(start)
 
