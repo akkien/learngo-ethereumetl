@@ -20,6 +20,10 @@ func main() {
 	var endBlock = flag.Int("end", -1, "end block: block would be parsed to")
 	flag.Parse()
 
+	paritionBatchSize := 1000
+	batchSize := 50
+	workerpoolSize := 10
+
 	// Setup Log
 	LOG_FILE := "./parser.log"
 	logFile, err := os.OpenFile(LOG_FILE, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
@@ -29,7 +33,6 @@ func main() {
 	defer logFile.Close()
 
 	logger := log.New(logFile, "INFO\t", log.Ldate|log.Ltime|log.Lshortfile)
-	logger.Println("Hello")
 
 	// RopstenHTTP := "https://mainnet.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
 	RopstenHTTP := "https://ropsten.infura.io/v3/2ee8969fa00742efb10051fc923552e1"
@@ -41,11 +44,11 @@ func main() {
 		}
 		start := time.Now()
 
-		job.ExportAll(*startBlock, *endBlock, 1000, 50, RopstenHTTP, connStr, 5)
+		job.ExportAll(*startBlock, *endBlock, paritionBatchSize, batchSize, RopstenHTTP, connStr, workerpoolSize)
 
 		elapsed := time.Since(start)
 
-		logger.Printf("Parse block took %s", elapsed)
+		logger.Printf("Parse blocks %d to %d took %s", *startBlock, *endBlock, elapsed)
 		logger.Println("Done")
 	} else if *mode == "realtime" {
 		lastBlock := -1
@@ -80,7 +83,7 @@ func main() {
 			newBlockInt := int(newBlock)
 			if newBlockInt != lastBlock {
 				lastBlock = newBlockInt
-				job.ExportAll(newBlockInt, newBlockInt, 1000, 5, RopstenHTTP, connStr, 5)
+				job.ExportAll(newBlockInt, newBlockInt, paritionBatchSize, batchSize, RopstenHTTP, connStr, workerpoolSize)
 			}
 		}
 
